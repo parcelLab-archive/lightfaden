@@ -1,12 +1,22 @@
+/* jshint esversion: 6 */
+
+// dependencies
+
+const req = require('rfr');
 const express = require('express');
 const logger = require('morgan');
-const utils = require('./lib/utils');
-const activity = require('./lib/activity');
-const ineedhelp = require('./lib/ineedhelp');
-const lightfaden = require('./lib/lightfaden');
 const mongoose = require('mongoose');
 
-const MONGOPATH = 'mongodb://localhost/lightfaden';
+// libs
+
+const settings = req('/settings');
+
+const utils = req('/lib/utils');
+const activity = req('/lib/activity');
+const ineedhelp = req('/lib/ineedhelp');
+const lightfaden = req('/lib/lightfaden');
+
+const MONGOPATH = settings.cred.mongo.path;
 const MONGOOPTIONS = {
   useMongoClient: true,
   native_parser: true,
@@ -20,7 +30,6 @@ const MONGOOPTIONS = {
 
 mongoose.connection.on('connected', function () {
   console.log('> Connected to MongoDB...');
-
 
   const app = express();
   app.use(logger('dev'));
