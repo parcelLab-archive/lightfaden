@@ -45,7 +45,7 @@ mongoose.connection.on('connected', function () {
   app.get('/activity', function(req, res) {
     var q = req.query;
     if (q.activity && q.target) {
-      activity.setActivity(q.activity, q.target, (err, msg) => {
+      activity.setActivity(q.userId, q.activity, q.target, (err, msg) => {
         if (err) res.status(500).json({msg: err});
         else res.status(200).json({msg: msg});
       });
@@ -55,6 +55,7 @@ mongoose.connection.on('connected', function () {
   });
 
   app.get('/showmemybill', function(req, res) {
+
     res.status(501).send();
   });
 
@@ -75,6 +76,7 @@ mongoose.connection.on('connected', function () {
   });
 
   app.get('/lightfaden', function(req, res) {
+    
     res.status(501).send();
   });
 
