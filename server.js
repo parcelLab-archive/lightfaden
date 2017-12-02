@@ -26,7 +26,15 @@ app.use((req, res, next) => {
 });
 
 app.get('/activity', function(req, res) {
-  res.status(501).send();
+  var q = req.query;
+  if (q.activity && q.target) {
+    activity.setActivity(q.activity, q.target, (err, msg) => {
+      if (err) res.status(500).json({msg: err});
+      else res.status(200).json({msg: msg});
+    });
+  } else {
+    res.json({msg: 'missing paramater (activity, target)'});
+  }
 });
 
 app.get('/showmemybill', function(req, res) {
