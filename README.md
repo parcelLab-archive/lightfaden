@@ -2,7 +2,7 @@
 
 > Lightfaden helps providers of SaaS products to develop their customers automatically. This includes customer help & support, verification and billing. So that you can focus on what really matters: your product.
 
-TOC: [About](#about) | [Trivia](#trivia)
+TOC: [About](#about) | [Setup](#setup) | [Trivia](#trivia)
 
 ## About
 
@@ -18,6 +18,10 @@ Lightfaden helps you to:
 * guide your customers whenever they need help with smart in-app-guides
 * charge your customers and generate invoices
 * advertise additional features and sell them
+
+## Setup
+
+This repo is the backend service of Lightfaden. For the frontend, which handles the integration with your software, see: https://github.com/parcelLab/lightfaden-plugin
 
 ## Trivia
 
