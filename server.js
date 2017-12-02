@@ -2,13 +2,11 @@ const express = require('express');
 const logger = require('morgan');
 const utils = require('./lib/utils');
 const activity = require('./lib/activity');
-const products = require('./lib/products');
 const ineedhelp = require('./lib/ineedhelp');
-const showmemybill = require('./lib/showmemybill');
 const lightfaden = require('./lib/lightfaden');
 const mongoose = require('mongoose');
 
-const MONGOPATH = 'mongodb://localhost/lighfaden';
+const MONGOPATH = 'mongodb://localhost/lightfaden';
 const MONGOOPTIONS = {
   useMongoClient: true,
   native_parser: true,
@@ -44,8 +42,8 @@ mongoose.connection.on('connected', function () {
 
   app.get('/activity', function(req, res) {
     var q = req.query;
-    if (q.activity && q.target) {
-      activity.setActivity(q.userId, q.activity, q.target, (err, msg) => {
+    if (q.activity) {
+      activity.setActivity(q.userId, q.activity, (err, msg) => {
         if (err) res.status(500).json({msg: err});
         else res.status(200).json({msg: msg});
       });
@@ -54,30 +52,22 @@ mongoose.connection.on('connected', function () {
     }
   });
 
-  app.get('/showmemybill', function(req, res) {
-
-    res.status(501).send();
-  });
-
   app.get('/ineedhelp', function(req, res) {
-    res.status(501).send();
-  });
-
-  app.get('/products', function(req, res) {
-    var q = req.query;
-    if (q.name && q.price && q.peruse) {
-      products.addProduct(q.userId, q.name, q.price, q.peruse, (err, data) => {
+    if (req.query.element){
+      ineedhelp.getHelp(req.query.userId, user.query.element, (err, help) => {
         if (err) res.status(500).json({msg: err});
-        else res.status(200).json({msg: data});
+        else res.status(200).json({msg: help});
       });
-    } else {
-      res.status(500).json({msg: 'missing paramater (name, price, peruse)'});
-    }
+    } else res.status(500).json({msg: 'missing parameter (element)'});
   });
 
   app.get('/lightfaden', function(req, res) {
-    
-    res.status(501).send();
+    if (req.query.route){
+      lightfaden.getLightfaden(userId, req.query.route, (err, guide) => {
+        if (err) res.status(500).json({msg: err});
+        else res.status(200).json({msg: guide})
+      });
+    } else res.status(500).json({msg: 'missing parameter (route)'});
   });
 
   var server = app.listen(8080, function(err) {
