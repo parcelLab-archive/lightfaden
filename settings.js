@@ -10,4 +10,12 @@ module.exports = {
       path: process.env.MONGO_PATH,
     },
   },
+  conf: {
+    app: {
+      port: process.env.APP_PORT,
+    },
+    api: {
+      port: process.env.API_PORT,
+    }
+  }
 };
