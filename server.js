@@ -70,7 +70,7 @@ mongoose.connection.on('connected', function () {
     } else res.status(500).json({msg: 'missing parameter (route)'});
   });
 
-  var server = app.listen(8080, function(err) {
+  var server = app.listen(3000, function(err) {
     if (err) console.log(err);
     else console.log('server is running: http://localhost:3000');
   });
