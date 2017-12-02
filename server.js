@@ -63,9 +63,9 @@ mongoose.connection.on('connected', function () {
 
   app.get('/lightfaden', function(req, res) {
     if (req.query.route){
-      lightfaden.getLightfaden(userId, req.query.route, (err, guide) => {
+      lightfaden.getLightfaden(req.query.userId, req.query.route, (err, guide) => {
         if (err) res.status(500).json({msg: err});
-        else res.status(200).json({msg: guide})
+        else res.status(200).json({msg: guide});
       });
     } else res.status(500).json({msg: 'missing parameter (route)'});
   });
