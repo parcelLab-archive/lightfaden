@@ -9,6 +9,6 @@ const renderUser = user => `
 
 module.exports = users => `
 <table class="table table-zebra">
-  ${users.map(renderUser)}
+  ${users.map(renderUser).join(' ')}
 </table>
 `;

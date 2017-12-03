@@ -10,7 +10,7 @@ const renderGuide = guide => `
 
 module.exports = guides => `
 <table class="table table-zebra">
-  ${guides.map(renderGuide)}
+  ${guides.map(renderGuide).join(' ')}
 </table>
 
 <a href="/guide/create" class="btn btn-success">add new guide</a>

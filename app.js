@@ -55,6 +55,13 @@ mongoose.connection.on('connected', function () {
     });
   });
 
+  app.get('/guide/edit/:id', function (req, res) {
+    Lightfaden.find({ _id: req.params.id }, function (err, guides) {
+      if (err ||  !guides) res.status(200).send(template('<code>nothing found</code>'));
+      else res.status(200).send(template(guideView(guides)));
+    });
+  });
+
   var server = app.listen(settings.conf.app.port, function (err) {
     if (err) console.log(err);
     else console.log('server is running: http://localhost:' + settings.conf.app.port);
