@@ -11,6 +11,16 @@ const mongoose = require('mongoose');
 
 const settings = req('/settings');
 
+const User = req('/lib/model').User;
+
+const template = req('/ui/template/master');
+
+// views
+
+const userView = req('/ui/views/users');
+
+// config
+
 const MONGOPATH = settings.cred.mongo.path;
 const MONGOOPTIONS = {
   useMongoClient: true,
@@ -29,16 +39,11 @@ mongoose.connection.on('connected', function () {
   const app = express();
   app.use(logger('dev'));
 
-  app.get('/activity', function (req, res) {
-    var q = req.query;
-    if (q.activity) {
-      activity.setActivity(q.userId, q.activity, (err, msg) => {
-        if (err) res.status(500).json({ msg: err });
-        else res.status(200).json({ msg: msg });
-      });
-    } else {
-      res.json({ msg: 'missing paramater (activity, target)' });
-    }
+  app.get('/users', function (req, res) {
+    User.find(function (err, users) {
+      if (err || !users) res.status(200).send(template('<code>nothing found</code>'));
+      else res.status(200).send(template(userView(users)));
+    });
   });
 
   var server = app.listen(settings.conf.api.port, function (err) {
