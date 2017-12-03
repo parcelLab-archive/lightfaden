@@ -11,11 +11,6 @@ const mongoose = require('mongoose');
 
 const settings = req('/settings');
 
-const utils = req('/lib/utils');
-const activity = req('/lib/activity');
-const ineedhelp = req('/lib/ineedhelp');
-const lightfaden = req('/lib/lightfaden');
-
 const MONGOPATH = settings.cred.mongo.path;
 const MONGOOPTIONS = {
   useMongoClient: true,
@@ -34,52 +29,19 @@ mongoose.connection.on('connected', function () {
   const app = express();
   app.use(logger('dev'));
 
-  app.use((req, res, next) => {
-    if (req.query.userId) {
-      utils.createUser(req.query.userId, (err, data) => {
-        if (err) {
-          console.log(err);
-          res.status(500).json({msg: err});
-        }
-        else {
-          console.log(data);
-          next();
-        }
-      });
-    } else return res.status(500).json({msg: 'missing userId'});
-  });
-
-  app.get('/activity', function(req, res) {
+  app.get('/activity', function (req, res) {
     var q = req.query;
     if (q.activity) {
       activity.setActivity(q.userId, q.activity, (err, msg) => {
-        if (err) res.status(500).json({msg: err});
-        else res.status(200).json({msg: msg});
+        if (err) res.status(500).json({ msg: err });
+        else res.status(200).json({ msg: msg });
       });
     } else {
-      res.json({msg: 'missing paramater (activity, target)'});
+      res.json({ msg: 'missing paramater (activity, target)' });
     }
   });
 
-  app.get('/ineedhelp', function(req, res) {
-    if (req.query.element){
-      ineedhelp.getHelp(req.query.userId, user.query.element, (err, help) => {
-        if (err) res.status(500).json({msg: err});
-        else res.status(200).json({msg: help});
-      });
-    } else res.status(500).json({msg: 'missing parameter (element)'});
-  });
-
-  app.get('/lightfaden', function(req, res) {
-    if (req.query.route){
-      lightfaden.getLightfaden(req.query.userId, req.query.route, (err, guide) => {
-        if (err) res.status(500).json({msg: err});
-        else res.status(200).json(guide);
-      });
-    } else res.status(500).json({msg: 'missing parameter (route)'});
-  });
-
-  var server = app.listen(settings.conf.api.port, function(err) {
+  var server = app.listen(settings.conf.api.port, function (err) {
     if (err) console.log(err);
     else console.log('server is running: http://localhost:' + settings.conf.api.port);
   });
