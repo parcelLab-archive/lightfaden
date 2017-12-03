@@ -3,6 +3,7 @@
 const renderUser = user => `
 <tr>
   <td>${user.userId}</td>
+  <td>${user.hybrisId ? user.hybrisId : 'not linked yet'}</td>
   <td>${user.activities.join(' ')}</td>
 </tr>
 `;
@@ -12,6 +13,7 @@ module.exports = users => `
   <thead>
     <tr>
       <th>ID</th>
+      <th>Hybris ID</th>
       <th>Activities</th>
     </tr>
   </thead>

@@ -14,7 +14,7 @@ module.exports = (numOfUsers, numOfGuides) => `
     <div class="well">
       <center>
         <h1>${numOfGuides}</h1>
-        users
+        guides
       </center>
     </div>
   </div>

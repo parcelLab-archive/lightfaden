@@ -91,6 +91,7 @@ mongoose.connection.on('connected', function () {
       function save(guide, wfCallback) {
         guide.text = req.body.inputMessage;
         guide.action = req.body.inputType;
+        guide.robot = req.body.inputType === 'QUESTION';
         guide.route = req.body.inputRoutes.replace(/\r/g, '').split('\n');
         guide.hasActivity = req.body.inputHasActivities.split(',').map(a => a.trim());
         guide.hasNotActivity = req.body.inputHasNotActivities.split(',').map(a => a.trim());
