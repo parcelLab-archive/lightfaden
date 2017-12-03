@@ -16,6 +16,9 @@ const activity = req('/lib/activity');
 const ineedhelp = req('/lib/ineedhelp');
 const lightfaden = req('/lib/lightfaden');
 
+const Hybris = req('/lib/hybris');
+var hybris = new Hybris(settings.cred.hybris.clientid, settings.cred.hybris.secret);
+
 const MONGOPATH = settings.cred.mongo.path;
 const MONGOOPTIONS = {
   useMongoClient: true,
@@ -47,6 +50,50 @@ mongoose.connection.on('connected', function () {
         }
       });
     } else return res.status(500).json({msg: 'missing userId'});
+  });
+
+  app.get('/hybris/createcustomer', function(req, res) {
+    var q = req.query;
+    var name = q.name;
+    var mail = q.email;
+    var street = q.street;
+    var zip = q.zip;
+    var city = q.city;
+    var userId = q.userId;
+    if (name && mail && street && zip && city) {
+      hybris.createCustomer(name, mail, street, zip, city, (err, hybrisId) => {
+        utils.updateUser(userId, hybrisId, (err, hybrisId) => {
+          res.status(200).json({msg: hybrisId});
+        });
+      });
+    } else {
+      res.json({msg: 'missing parameter (name, maik, street, zip, city'});
+    }
+  });
+
+  app.get('/hybris/subscribecustomertoproduct', (req, res) => {
+    var q = req.query;
+    var userId = q.userId;
+    var product = q.product;
+    utils.findUser(userId, (err, user) => {
+      if (err) return res.status(500).json({msg: err});
+      hybris.subscribeCustomerToProduct(user.hybrisId, product, (err, id) => {
+        if (err) return res.status(500).json({msg: err});
+        return res.status(500).json({msg: id});
+      });
+    })
+  });
+
+  app.get('/hybris/getbillforcustomer', (req, res) => {
+    var q = req.query;
+    var userId = q.userId;
+    utils.findUser(userId, (err, user) => {
+      if (err) return res.status(500).json({msg: err});
+      hybris.getBillForCustomer(user.hybrisId, Date.now(), (err, bills) => {
+        if (err) return res.status(500).json({msg: err});
+        return res.status(500).json({msg: bills});
+      });
+    })
   });
 
   app.get('/activity', function(req, res) {
