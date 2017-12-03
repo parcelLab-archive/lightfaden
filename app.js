@@ -18,6 +18,7 @@ const template = req('/ui/template/master');
 // views
 
 const userView = req('/ui/views/users');
+const guideView = req('/ui/views/guides');
 
 // config
 
@@ -43,6 +44,13 @@ mongoose.connection.on('connected', function () {
     User.find(function (err, users) {
       if (err || !users) res.status(200).send(template('<code>nothing found</code>'));
       else res.status(200).send(template(userView(users)));
+    });
+  });
+
+  app.get('/guides', function (req, res) {
+    Lightfaden.find(function (err, guides) {
+      if (err ||  !guides) res.status(200).send(template('<code>nothing found</code>'));
+      else res.status(200).send(template(guideView(guides)));
     });
   });
 

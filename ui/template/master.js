@@ -8,7 +8,7 @@ module.exports = content => `
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 </head>
 
-<body>
+<body style="padding-top: 10px; padding-bottom: 10px;">
 
   <div class="container">
     <nav class="navbar navbar-default">
@@ -24,7 +24,8 @@ module.exports = content => `
         </div>
         <div id="navbar" class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
-            <li class="active"><a href="#">Users</a></li>
+            <li class="active"><a href="/users">Users</a></li>
+            <li class="active"><a href="/guides">Guides</a></li>
           </ul>
         </div>
       </div>
