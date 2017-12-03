@@ -24,8 +24,8 @@ module.exports = content => `
         </div>
         <div id="navbar" class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
-            <li class="active"><a href="/users">Users</a></li>
-            <li class="active"><a href="/guides">Guides</a></li>
+            <li><a href="/users">Users</a></li>
+            <li><a href="/guides">Guides</a></li>
           </ul>
         </div>
       </div>

@@ -12,6 +12,7 @@ const mongoose = require('mongoose');
 const settings = req('/settings');
 
 const User = req('/lib/model').User;
+const Lightfaden = req('/lib/model').Lightfaden;
 
 const template = req('/ui/template/master');
 
