@@ -22,7 +22,7 @@ ${ success ? `
     <label for="inputType" class="col-sm-2 control-label">Type</label>
     <div class="col-sm-10">
       <select class="form-control" id="inputType" name="inputType">
-        ${allowedActions.map(a => `<option value="${a.opt}" ${a.opt === g.action ? 'selected' : ''}>${a.text}</option>`).join(' ')}
+        ${allowedActions.map(a => `<option value="${a.opt}" ${g && a.opt === g.action ? 'selected' : ''}>${a.text}</option>`).join(' ')}
       </select>
     </div>
   </div>
