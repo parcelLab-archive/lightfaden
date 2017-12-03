@@ -1,6 +1,6 @@
 /* jshint esversion: 6 */
 
-module.exports = content => `
+module.exports = (content, location) => `
 <html>
 
 <head>
@@ -20,12 +20,13 @@ module.exports = content => `
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="#">Lightfaden</a>
+          <a class="navbar-brand" href="/">Lightfaden</a>
         </div>
         <div id="navbar" class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
-            <li><a href="/users">Users</a></li>
-            <li><a href="/guides">Guides</a></li>
+            <li ${location === 'dashboard' ? 'class="active"' : ''}><a href="/">Dashboard</a></li>
+            <li ${location === 'users' ? 'class="active"' : ''}><a href="/users">Users</a></li>
+            <li ${location === 'guides' ? 'class="active"' : ''}><a href="/guides">Guides</a></li>
           </ul>
         </div>
       </div>
@@ -40,7 +41,11 @@ module.exports = content => `
     <div class="row">
       <div class="col-md-12">
         <hr>
-        <small>Lightfaden.io 2017</small>
+        <small>
+          Lightfaden.io 2017
+          &bull;
+          <a href="mailto:support@lightfaden.io">support@lightfaden.io</a>
+        </small>
       </div>
     </div>
   </div>
