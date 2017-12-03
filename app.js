@@ -49,29 +49,32 @@ mongoose.connection.on('connected', function () {
   app.use(bodyParser.json());
 
   app.get(['/', '/dashboard'], function (req, res) {
-    User.count(function (err, numOfUsers) {
-      if (err) res.status(200).send(template('<code>nothing found</code>'));
-      else res.status(200).send(template(dashboardView(numOfUsers), 'dashboard'));
+    async.parallel([
+      pcb => User.count(pcb),
+      pcb => Guide.count(pcb),
+    ], function (err, counts) {
+      if (err) res.status(200).send(template('<code>errored: ' + JSON.stringify(err) + '</code>'));
+      else res.status(200).send(template(dashboardView(counts[0], counts[1]), 'dashboard'));
     });
   });
 
   app.get('/users', function (req, res) {
-    User.find(function (err, users) {
-      if (err || !users) res.status(200).send(template('<code>nothing found</code>'));
+    User.find(function (err, users)  {
+      if (err ||  !users) res.status(200).send(template('<code>nothing found</code>'));
       else res.status(200).send(template(userView(users), 'users'));
     });
   });
 
   app.get('/guides', function (req, res) {
-    Guide.find(function (err, guides) {
-      if (err ||  !guides) res.status(200).send(template('<code>nothing found</code>'));
+    Guide.find(function (err, guides)  {
+      if (err || !guides) res.status(200).send(template('<code>nothing found</code>'));
       else res.status(200).send(template(guideView(guides), 'guides'));
     });
   });
 
   app.get('/guide/edit/:id', function (req, res) {
-    Guide.findOne({ _id: req.params.id }, function (err, guide) {
-      if (err ||  !guide) res.status(200).send(template('<code>nothing found</code>'));
+    Guide.findOne({ _id: req.params.id }, function (err, guide)  {
+      if (err || !guide) res.status(200).send(template('<code>nothing found</code>'));
       else res.status(200).send(template(guideEditView(guide), 'guides'));
     });
   });
@@ -81,23 +84,22 @@ mongoose.connection.on('connected', function () {
       function get(wfCallback) {
         if (req.params.id === 'new') wfCallback(null, new Guide({}));
         else Guide.findOne({ _id: req.params.id }, function (err, res) {
-          if (err || !res) wfCallback('Could not update guide');
+          if (err ||  !res) wfCallback('Could not update guide');
           else wfCallback(null, res);
         });
       },
       function save(guide, wfCallback) {
-        console.log(res);
         guide.text = req.body.inputMessage;
         guide.action = req.body.inputType;
         guide.route = req.body.inputRoutes.replace(/\r/g, '').split('\n');
         guide.hasActivity = req.body.inputHasActivities.split(',').map(a => a.trim());
         guide.hasNotActivity = req.body.inputHasNotActivities.split(',').map(a => a.trim());
         guide.payload = JSON.parse(req.body.inputPayload);
-        guide.save(wfCallback);
+        guide.save(err => wfCallback(err, guide));
       }
-    ], function done(err) {
+    ], function done(err, guide) {
       if (err) res.status(200).send(template('<code>Error: ' + JSON.stringify(err) + '</code>', 'guide'));
-      else res.status(200).send(template(JSON.stringify(req.body), 'guide'));
+      else res.status(200).send(template(guideEditView(guide, true), 'guides'));
     });
   });
 

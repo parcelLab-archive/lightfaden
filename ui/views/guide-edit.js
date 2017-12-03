@@ -6,7 +6,11 @@ const allowedActions = [
   { text: 'Interactive tour 🗺', opt: 'START_TOUR' },
 ];
 
-module.exports = g => `
+module.exports = (g, success) => `
+${ success ? `
+  <div class="alert alert-success" role="alert">Saved!</div>
+` : ''}
+
 <form class="form-horizontal" action="/guide/edit/${g ? g._id : 'new'}" method="POST">
   <div class="form-group">
     <label for="inputMessage" class="col-sm-2 control-label">Message</label>
@@ -18,7 +22,7 @@ module.exports = g => `
     <label for="inputType" class="col-sm-2 control-label">Type</label>
     <div class="col-sm-10">
       <select class="form-control" id="inputType" name="inputType">
-        ${allowedActions.map(a => `<option value="${a.opt}">${a.text}</option>`).join(' ')}
+        ${allowedActions.map(a => `<option value="${a.opt}" ${a.opt === g.action ? 'selected' : ''}>${a.text}</option>`).join(' ')}
       </select>
     </div>
   </div>
