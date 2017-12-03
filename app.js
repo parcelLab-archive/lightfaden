@@ -5,21 +5,26 @@
 const req = require('rfr');
 const express = require('express');
 const logger = require('morgan');
+const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
+const async = require('async');
 
 // libs
 
 const settings = req('/settings');
 
 const User = req('/lib/model').User;
-const Lightfaden = req('/lib/model').Lightfaden;
+const Guide = req('/lib/model').Lightfaden;
 
 const template = req('/ui/template/master');
 
 // views
 
+const dashboardView = req('/ui/views/dashboard');
 const userView = req('/ui/views/users');
 const guideView = req('/ui/views/guides');
+const guideEditView = req('/ui/views/guide-edit');
+const redirectView = req('/ui/views/redirect');
 
 // config
 
@@ -40,26 +45,68 @@ mongoose.connection.on('connected', function () {
 
   const app = express();
   app.use(logger('dev'));
+  app.use(bodyParser.urlencoded({ extended: true }));
+  app.use(bodyParser.json());
+
+  app.get(['/', '/dashboard'], function (req, res) {
+    User.count(function (err, numOfUsers) {
+      if (err) res.status(200).send(template('<code>nothing found</code>'));
+      else res.status(200).send(template(dashboardView(numOfUsers), 'dashboard'));
+    });
+  });
 
   app.get('/users', function (req, res) {
     User.find(function (err, users) {
       if (err || !users) res.status(200).send(template('<code>nothing found</code>'));
-      else res.status(200).send(template(userView(users)));
+      else res.status(200).send(template(userView(users), 'users'));
     });
   });
 
   app.get('/guides', function (req, res) {
-    Lightfaden.find(function (err, guides) {
+    Guide.find(function (err, guides) {
       if (err ||  !guides) res.status(200).send(template('<code>nothing found</code>'));
-      else res.status(200).send(template(guideView(guides)));
+      else res.status(200).send(template(guideView(guides), 'guides'));
     });
   });
 
   app.get('/guide/edit/:id', function (req, res) {
-    Lightfaden.find({ _id: req.params.id }, function (err, guides) {
-      if (err ||  !guides) res.status(200).send(template('<code>nothing found</code>'));
-      else res.status(200).send(template(guideView(guides)));
+    Guide.findOne({ _id: req.params.id }, function (err, guide) {
+      if (err ||  !guide) res.status(200).send(template('<code>nothing found</code>'));
+      else res.status(200).send(template(guideEditView(guide), 'guides'));
     });
+  });
+
+  app.post('/guide/edit/:id', function (req, res) {
+    async.waterfall([
+      function get(wfCallback) {
+        if (req.params.id === 'new') wfCallback(null, new Guide({}));
+        else Guide.findOne({ _id: req.params.id }, function (err, res) {
+          if (err || !res) wfCallback('Could not update guide');
+          else wfCallback(null, res);
+        });
+      },
+      function save(guide, wfCallback) {
+        console.log(res);
+        guide.text = req.body.inputMessage;
+        guide.action = req.body.inputType;
+        guide.route = req.body.inputRoutes.replace(/\r/g, '').split('\n');
+        guide.hasActivity = req.body.inputHasActivities.split(',').map(a => a.trim());
+        guide.hasNotActivity = req.body.inputHasNotActivities.split(',').map(a => a.trim());
+        guide.payload = JSON.parse(req.body.inputPayload);
+        guide.save(wfCallback);
+      }
+    ], function done(err) {
+      if (err) res.status(200).send(template('<code>Error: ' + JSON.stringify(err) + '</code>', 'guide'));
+      else res.status(200).send(template(JSON.stringify(req.body), 'guide'));
+    });
+  });
+
+  app.get('/guide/create', function (req, res) {
+    res.status(200).send(template(guideEditView(), 'guides'));
+  });
+
+  app.get('/redirect', function (req, res) {
+    res.status(200).send(redirectView());
   });
 
   var server = app.listen(settings.conf.app.port, function (err) {
