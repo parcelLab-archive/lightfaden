@@ -46,9 +46,9 @@ mongoose.connection.on('connected', function () {
     });
   });
 
-  var server = app.listen(settings.conf.api.port, function (err) {
+  var server = app.listen(settings.conf.app.port, function (err) {
     if (err) console.log(err);
-    else console.log('server is running: http://localhost:' + settings.conf.api.port);
+    else console.log('server is running: http://localhost:' + settings.conf.app.port);
   });
 });
 
