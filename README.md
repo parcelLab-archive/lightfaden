@@ -1,3 +1,5 @@
+![Lightfaden](https://github.com/parcelLab/lightfaden/blob/master/lightfaden.png?raw=true)
+
 # Lightfaden
 
 > Lightfaden helps providers of SaaS products to develop their customers automatically. This includes customer help & support, verification and billing. So that you can focus on what really matters: your product.
